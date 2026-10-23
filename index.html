@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MelodyExcerpt ♡</title>
+<style>
+body{margin:0;background:#fff7fc;color:#655277;font-family:Arial,sans-serif}
+header{text-align:center;padding:30px;background:linear-gradient(120deg,#ffe6f4,#eee7ff)}
+h1{margin:0;color:#b85da7}
+main{max-width:760px;margin:25px auto;padding:20px}
+.card{background:white;border:1px solid #f0d8f0;border-radius:18px;padding:20px;margin-bottom:18px}
+textarea{width:100%;height:220px;box-sizing:border-box;border:1px solid #e5cbea;border-radius:12px;padding:12px;font-size:15px;resize:vertical}
+button,select{border:1px solid #e5cbea;border-radius:10px;padding:11px;background:#fff0fa;color:#805a91;cursor:pointer}
+button.primary{background:#d56fba;color:white;border:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.song{background:#fff4fb;border-radius:12px;padding:13px;margin-top:10px}
+.song small{color:#bd66a6}
+.quote{padding:12px 0;border-bottom:1px solid #f2e7f5;line-height:1.8}
+footer{text-align:center;padding:25px;color:#a38ab1}
+</style>
+</head>
+<body>
+<header>
+  <h1>♫ MelodyExcerpt ♡</h1>
+  <p>긴 글을, 노래와 함께</p>
+  <small>당신의 문장에 어울리는 음악을 찾아요 ✧</small>
+</header>
+<main>
+  <section class="card">
+    <h2>✎ 긴 글 붙여넣기</h2>
+    <textarea id="source" placeholder="소설, 독백, 일기 등 긴 글을 붙여넣어 주세요 ♡"></textarea>
+    <p><span id="count">0</span>자</p>
+    <label>발췌 문장 수 </label>
+    <select id="amount">
+      <option>3</option><option selected>5</option><option>8</option><option>12</option>
+    </select>
+    <div class="actions">
+      <button onclick="example()">예시 글</button>
+      <button onclick="clearText()">지우기</button>
+      <button class="primary" onclick="extract()">✧ 발췌하기</button>
+    </div>
+  </section>
+  <section class="card">
+    <h2>♡ 발췌 결과</h2>
+    <div id="result">글을 입력하고 발췌하기를 눌러주세요.</div>
+    <button class="primary" onclick="copyResult()">결과 전체 복사</button>
+  </section>
+</main>
+<footer>좋은 글엔, 좋은 음악이니까 ♡</footer>
+<script>
+const songs=[
+ {t:"밤편지",a:"아이유",m:"그리움",k:["그리움","기억","밤","편지","보고 싶","달빛"]},
+ {t:"seasons",a:"wave to earth",m:"청춘 · 그리움",k:["계절","바다","청춘","파도"]},
+ {t:"봄날",a:"방탄소년단",m:"기다림 · 희망",k:["기다리","겨울","봄","친구"]},
+ {t:"Yellow",a:"Coldplay",m:"사랑 · 따뜻함",k:["별","빛","사랑","하늘"]},
+ {t:"The Night We Met",a:"Lord Huron",m:"추억 · 쓸쓸함",k:["과거","돌아가","후회","잃어"]},
+ {t:"좋다고 말해",a:"볼빨간사춘기",m:"설렘 · 청춘",k:["설레","고백","처음","웃음"]},
+ {t:"너였다면",a:"정승환",m:"이별 · 애틋함",k:["이별","눈물","미안","마지막"]},
+ {t:"Love Yourself",a:"Justin Bieber",m:"위로 · 희망",k:["괜찮","상처","성장","꿈"]},
+ {t:"주저하는 연인들을 위해",a:"잔나비",m:"청춘 · 애틋함",k:["청춘","연인","우리","시간"]},
+ {t:"Until I Found You",a:"Stephen Sanchez",m:"사랑 · 설렘",k:["사랑","운명","함께","찾았"]},
+ {t:"사건의 지평선",a:"윤하",m:"이별 · 새출발",k:["끝","안녕","새로운","시작"]},
+ {t:"가을밤에 든 생각",a:"잔나비",m:"추억 · 잔잔함",k:["가을","밤","생각","추억"]}
+];
+const source=document.getElementById("source");
+source.addEventListener("input",()=>document.getElementById("count").textContent=source.value.length);
+function example(){source.value="너를 처음 만났던 날의 공기가 아직도 선명하다. 시간이 지나도 그때의 감정은 조금도 변하지 않았다. 가끔은 그리움으로, 가끔은 아픔으로 내 안에 남아 있다. 이제는 안녕이라고 말해야 한다는 걸 알지만, 마음 한구석은 여전히 너를 기다린다. 그래도 언젠가는 이 기억도 따뜻한 추억으로 남겠지.";source.dispatchEvent(new Event("input"))}
+function clearText(){source.value="";source.dispatchEvent(new Event("input"));document.getElementById("result").textContent="글을 입력하고 발췌하기를 눌러주세요."}
+function extract(){
+ const text=source.value.trim();
+ if(!text){alert("먼저 글을 붙여넣어 주세요 ♡");return}
+ const sentences=(text.match(/[^.!?。！？\n]+[.!?。！？]?/g)||[]).map(s=>s.trim()).filter(s=>s.length>=8);
+ if(!sentences.length){alert("조금 더 긴 글을 입력해 주세요.");return}
+ const moods={"그리움":["그리움","보고 싶","기억","추억","떠나","그때"],"설렘":["설레","두근","처음","고백","웃음"],"이별":["이별","헤어","눈물","마지막","안녕"],"희망":["희망","괜찮","빛","내일","꿈","시작"],"사랑":["사랑","너를","함께","영원"],"잔잔함":["밤","바람","달빛","별","바다"]};
+ const scores={};for(const [m,words] of Object.entries(moods))scores[m]=words.reduce((n,w)=>n+(text.split(w).length-1),0);
+ const mood=Object.keys(scores).sort((a,b)=>scores[b]-scores[a])[0];
+ const selected=sentences.map((s,i)=>({s,i,score:s.length>=20&&s.length<=120?2:0})).sort((a,b)=>b.score-a.score).slice(0,+document.getElementById("amount").value).sort((a,b)=>a.i-b.i);
+ const used=new Set();let out=`<p><b>글의 분위기: ${mood}</b></p>`;let plain=`글의 분위기: ${mood}\n\n`;
+ selected.forEach((item,i)=>{
+  let ranked=songs.map(song=>({song,score:(song.k||[]).reduce((n,k)=>n+(text.includes(k)?1:0),0)+(song.m.includes(mood)?2:0)})).sort((a,b)=>b.score-a.score);
+  let pick=ranked.find(x=>!used.has(x.song.t))?.song||ranked[0].song;used.add(pick.t);
+  out+=`<div class="quote">“${escapeHtml(item.s)}”</div><div class="song">♫ <small>추천 노래</small><br><b>${escapeHtml(pick.t)}</b> — ${escapeHtml(pick.a)}<br><small>분위기: ${escapeHtml(pick.m)}</small></div>`;
+  plain+=`“${item.s}”\n♪ ${pick.t} — ${pick.a}\n분위기: ${pick.m}\n\n`;
+ });
+ document.getElementById("result").innerHTML=out;
+ document.getElementById("result").dataset.plain=plain;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function copyResult(){const text=document.getElementById("result").dataset.plain;if(!text){alert("먼저 발췌하기를 눌러주세요 ♡");return}try{await navigator.clipboard.writeText(text);alert("복사했어요 ♡")}catch(e){const t=document.createElement("textarea");t.value=text;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();alert("복사했어요 ♡")}}
+</script>
+</body>
+</html>
